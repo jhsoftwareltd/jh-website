@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JH Software Limited — JH Download Manager</title>
+  <meta name="description" content="A lightweight, ad-free download manager built for everyday speed and reliability by JH Software Limited." />
+  <meta property="og:title" content="JH Software Limited — JH Download Manager" />
+  <meta property="og:description" content="Downloads, made faster and simpler." />
+  <meta property="og:type" content="website" />
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23071126'/%3E%3Cpath d='M13 38v7a5 5 0 0 0 5 5h28a5 5 0 0 0 5-5v-7h-6v6H19v-6h-6z' fill='%2322c55e'/%3E%3Cpath d='M25 13h14v17h8L32 45 17 30h8V13z' fill='%2384cc16'/%3E%3Cpolygon points='29,21 29,31 37,26' fill='%23ffffff'/%3E%3C/svg%3E" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg-dark: #050b18;
+      --bg-light: #ffffff;
+      --text-white: #f8fafc;
+      --text-dark: #0f172a;
+      --text-muted: #475569;
+      --accent-blue: #38bdf8;
+      --accent-blue-strong: #0284c7;
+      --border-light: #e2e8f0;
+      --max-w: 1140px;
+      --transition: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; color: var(--text-dark); background: var(--bg-light); -webkit-font-smoothing: antialiased; }
+    body { background: var(--bg-light); }
+    h1, h2, h3, h4 { font-family: 'Plus Jakarta Sans', 'Inter', sans-serif; }
+    a { text-decoration: none; color: inherit; }
+    .container { width: 100%; max-width: var(--max-w); margin: 0 auto; padding: 0 24px; }
+
+    /* NAVBAR */
+    .navbar { position: sticky; top: 0; z-index: 100; background: #ffffff; border-bottom: 1px solid rgba(226, 232, 240, 0.7); }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+    .brand-logo { display: flex; align-items: center; gap: 11px; }
+    .brand-logo img.custom-logo { height: 40px; width: auto; object-fit: contain; border-radius: 8px; }
+    .brand-text-wrap { display: flex; flex-direction: column; line-height: 1.1; }
+    .brand-name { font-size: 15.5px; font-weight: 800; color: #0b142c; letter-spacing: 0.02em; }
+    .brand-sub { font-size: 9.5px; font-weight: 700; letter-spacing: 0.24em; color: #64748b; text-transform: uppercase; margin-top: 2px; }
+
+    .nav-links { display: flex; align-items: center; gap: 32px; }
+    .nav-links a.nav-item { font-size: 14px; font-weight: 500; color: #334155; transition: color var(--transition); }
+    .nav-links a.nav-item:hover { color: var(--accent-blue-strong); }
+    .btn-nav { background: #071126; color: #ffffff; font-size: 13.5px; font-weight: 600; padding: 10px 18px; border-radius: 10px; transition: background var(--transition), transform var(--transition); }
+    .btn-nav:hover { background: #0f2347; transform: translateY(-1px); }
+    .mobile-toggle { display: none; background: none; border: 1px solid var(--border-light); border-radius: 8px; padding: 7px 11px; cursor: pointer; font-size: 18px; }
+
+    /* HERO */
+    .hero { position: relative; overflow: hidden; background: radial-gradient(circle at 75% 45%, rgba(37, 99, 235, 0.22), transparent 52%), linear-gradient(160deg, #040914 0%, #071226 55%, #091732 100%); color: var(--text-white); padding: 84px 0; }
+    .hero-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; align-items: center; gap: 48px; }
+
+    .release-pill { display: inline-flex; align-items: center; gap: 8px; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.28); color: #7dd3fc; font-size: 12.5px; font-weight: 600; padding: 6px 14px; border-radius: 999px; margin-bottom: 24px; }
+    .pulse-dot { width: 7px; height: 7px; background: #34d399; border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.65); } 70% { box-shadow: 0 0 0 7px rgba(52, 211, 153, 0); } 100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); } }
+
+    .hero-title { font-size: clamp(2.4rem, 4.8vw, 3.8rem); font-weight: 800; line-height: 1.08; letter-spacing: -0.025em; margin-bottom: 20px; }
+    .hero-title .highlight { background: linear-gradient(90deg, var(--accent-blue) 0%, #a78bfa 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero-desc { font-size: 17px; line-height: 1.65; color: #cbd5e1; max-width: 490px; margin-bottom: 32px; }
+
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; }
+    .btn-primary { background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-blue-strong) 100%); color: #030b1a; font-weight: 700; font-size: 14.5px; padding: 14px 24px; border-radius: 12px; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 10px 28px rgba(56, 189, 248, 0.25); transition: transform var(--transition); }
+    .btn-primary:hover { transform: translateY(-2px); }
+    .btn-secondary { background: rgba(255, 255, 255, 0.05); color: #f1f5f9; border: 1px solid rgba(148, 163, 184, 0.28); font-weight: 600; font-size: 14.5px; padding: 14px 22px; border-radius: 12px; transition: background var(--transition); }
+    .btn-secondary:hover { background: rgba(255, 255, 255, 0.1); }
+
+    /* CLEAN HERO CARD */
+    .hero-visual { position: relative; display: flex; align-items: center; justify-content: center; }
+    .orbit { position: absolute; width: 340px; height: 340px; border-radius: 50%; border: 1px dashed rgba(96, 165, 250, 0.2); animation: spinSlow 55s linear infinite; pointer-events: none; }
+    @keyframes spinSlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+    .product-card { position: relative; width: 268px; background: linear-gradient(165deg, rgba(20, 38, 78, 0.85) 0%, rgba(9, 19, 43, 0.95) 100%); border: 1px solid rgba(125, 211, 252, 0.28); border-radius: 24px; padding: 28px 22px; backdrop-filter: blur(18px); text-align: center; box-shadow: 0 28px 65px rgba(0, 0, 0, 0.5); z-index: 2; }
+    .app-icon-wrap { width: 112px; height: 112px; margin: 0 auto 20px; border-radius: 26px; background: linear-gradient(145deg, #0d2248 0%, #07132c 100%); display: flex; align-items: center; justify-content: center; padding: 10px; box-shadow: 0 14px 30px rgba(0, 0, 0, 0.45); overflow: hidden; }
+    .app-icon-wrap img { width: 100%; height: 100%; object-fit: contain; border-radius: 18px; }
+    .product-card h3 { font-size: 20px; font-weight: 800; color: #ffffff; margin-bottom: 6px; }
+    .product-card span { font-size: 12px; font-weight: 700; color: var(--accent-blue); letter-spacing: 0.08em; text-transform: uppercase; }
+
+    /* UNIFIED SEAMLESS WHITE CANVAS */
+    .section { background: #ffffff; padding: 72px 0; }
+    .section-head { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 34px; }
+    .section-title { font-size: clamp(1.85rem, 3vw, 2.35rem); font-weight: 800; color: var(--text-dark); letter-spacing: -0.02em; }
+    .section-sub { font-size: 16px; color: var(--text-muted); margin-top: 6px; }
+    .release-badge { font-size: 13px; font-weight: 600; color: #334155; background: #f8fafc; border: 1px solid var(--border-light); padding: 8px 15px; border-radius: 999px; }
+
+    /* PLATFORM CARDS */
+    .platform-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+    .platform-card { background: #ffffff; border-radius: 20px; padding: 24px; border: 1px solid var(--border-light); display: flex; flex-direction: column; justify-content: space-between; gap: 22px; transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition); }
+    .platform-card.available { border-color: #7dd3fc; box-shadow: 0 10px 28px rgba(2, 132, 199, 0.07); }
+    .platform-card.available:hover { transform: translateY(-3px); box-shadow: 0 18px 36px rgba(2, 132, 199, 0.13); border-color: var(--accent-blue); }
+
+    .card-top-bar { display: flex; align-items: center; justify-content: space-between; padding-bottom: 14px; margin-bottom: 16px; border-bottom: 1px solid #f1f5f9; }
+    .ver-tag { font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 8px; }
+    .ver-live { background: #e0f2fe; color: #0369a1; }
+    .ver-soon { background: #f1f5f9; color: #475569; }
+    .status-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; padding: 4px 10px; border-radius: 999px; }
+    .status-live { background: #dcfce7; color: #15803d; }
+    .status-soon { background: #f1f5f9; color: #64748b; }
+
+    .os-row { display: flex; align-items: center; gap: 14px; }
+    .os-icon { width: 48px; height: 48px; border-radius: 13px; background: #ffffff; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .os-row h3 { font-size: 19px; font-weight: 800; }
+    .os-meta { font-size: 13px; color: var(--text-muted); margin-top: 12px; line-height: 1.5; }
+
+    .btn-dl { width: 100%; padding: 13px 16px; border-radius: 12px; border: none; font-size: 14px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: all var(--transition); }
+    .btn-dl-live { background: var(--accent-blue-strong); color: #ffffff; box-shadow: 0 8px 18px rgba(2, 132, 199, 0.24); }
+    .btn-dl-live:hover { filter: brightness(0.92); }
+    .btn-dl-soon { background: #f8fafc; color: #64748b; border: 1px solid #e2e8f0; cursor: default; }
+
+    .promo-banner-wrap { margin-top: 38px; border-radius: 18px; overflow: hidden; border: 1px solid var(--border-light); display: none; }
+    .promo-banner-wrap img { width: 100%; max-height: 400px; object-fit: cover; display: block; }
+
+    /* FEATURES */
+    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-top: 34px; }
+    .feature-card { background: #ffffff; border: 1px solid var(--border-light); border-radius: 16px; padding: 26px; }
+    .feature-icon { width: 42px; height: 42px; border-radius: 11px; background: #eff6ff; color: var(--accent-blue-strong); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; font-size: 18px; }
+    .feature-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+    .feature-card p { font-size: 14px; line-height: 1.6; color: var(--text-muted); }
+
+    /* FAQ */
+    .faq-list { max-width: 760px; margin: 34px auto 0; display: flex; flex-direction: column; gap: 12px; }
+    .faq-item { background: #ffffff; border: 1px solid var(--border-light); border-radius: 14px; overflow: hidden; }
+    .faq-btn { width: 100%; background: none; border: none; padding: 18px 22px; text-align: left; font-size: 15px; font-weight: 700; color: var(--text-dark); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+    .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.25s ease; padding: 0 22px; color: var(--text-muted); font-size: 14px; line-height: 1.6; }
+    .faq-item.active .faq-answer { max-height: 160px; padding-bottom: 18px; }
+
+    /* FOOTER */
+    .footer { background: #040914; color: #94a3b8; padding: 52px 0 28px; }
+    .footer-top { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 36px; padding-bottom: 36px; border-bottom: 1px solid rgba(148, 163, 184, 0.14); }
+    .footer-brand p { font-size: 13.5px; margin-top: 8px; max-width: 280px; line-height: 1.6; }
+    .footer-cols { display: flex; gap: 56px; flex-wrap: wrap; }
+    .footer h4 { color: #f8fafc; font-size: 13.5px; margin-bottom: 12px; }
+    .footer ul { list-style: none; display: flex; flex-direction: column; gap: 9px; font-size: 13.5px; }
+    .footer ul a:hover { color: var(--accent-blue); }
+    .footer-bottom { padding-top: 22px; font-size: 12.5px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+
+    .toast { position: fixed; bottom: 24px; right: 24px; background: #071226; color: #f8fafc; border: 1px solid rgba(56, 189, 248, 0.35); padding: 13px 18px; border-radius: 12px; font-size: 13.5px; z-index: 999; opacity: 0; transform: translateY(14px); pointer-events: none; transition: all 0.25s ease; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 920px) {
+      .hero-grid { grid-template-columns: 1fr; text-align: center; }
+      .hero-desc { margin-left: auto; margin-right: auto; }
+      .hero-actions { justify-content: center; }
+      .platform-grid, .features-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 680px) {
+      .nav-links { display: none; position: absolute; top: 72px; left: 0; right: 0; background: #fff; flex-direction: column; padding: 20px 24px; gap: 16px; border-bottom: 1px solid var(--border-light); }
+      .nav-links.open { display: flex; }
+      .mobile-toggle { display: inline-flex; }
+      .platform-grid, .features-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <header class="navbar">
+    <div class="container nav-inner">
+      <a href="#" class="brand-logo">
+        <span id="uiNavbarLogoWrap">
+          <svg width="42" height="33" viewBox="0 0 120 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="jhGrad" x1="10" y1="10" x2="105" y2="80" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#0ea5e9"/><stop offset="55%" stop-color="#1d4ed8"/><stop offset="100%" stop-color="#0f172a"/></linearGradient>
+              <linearGradient id="orbitGrad" x1="0" y1="80" x2="115" y2="5" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#2563eb"/><stop offset="60%" stop-color="#6366f1"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient>
+            </defs>
+            <path d="M18 52C6 72 22 86 52 79C84 71 108 42 103 20C101 11 91 8 78 11" stroke="url(#orbitGrad)" stroke-width="5.5" stroke-linecap="round"/>
+            <rect x="96" y="3" width="7" height="7" rx="1" fill="#1d4ed8"/><rect x="106" y="10" width="6" height="6" rx="1" fill="#2563eb"/><rect x="93" y="14" width="5.5" height="5.5" rx="1" fill="#3b82f6"/>
+            <path d="M32 22H56L48 58C46 67 39 72 29 72C22 72 18 68 18 62H31C33 62 35 60 36 56L41 31H29L32 22Z" fill="url(#jhGrad)"/>
+            <path d="M59 22H72L67 42H80L85 22H98L87 68H74L78 51H65L61 68H48L59 22Z" fill="url(#jhGrad)"/>
+            <rect x="64" y="40" width="20" height="12" rx="2.5" fill="#0f172a"/>
+            <path d="M70 43.5L67 46L70 48.5M78 43.5L81 46L78 48.5M75 43L73 49" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <div class="brand-text-wrap">
+          <span class="brand-name" id="uiCompanyName">JH SOFTWARE</span>
+          <span class="brand-sub" id="uiCompanySub">LIMITED</span>
+        </div>
+      </a>
+
+      <nav class="nav-links" id="navLinks">
+        <a href="#downloads" class="nav-item">Download</a>
+        <a href="#features" class="nav-item">Features</a>
+        <a href="#support" class="nav-item">Support</a>
+        <a href="#downloads" class="btn-nav" id="uiNavCta">Download v1.0.3</a>
+      </nav>
+      <button class="mobile-toggle" id="mobileToggle" aria-label="Menu">&#9776;</button>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero" id="uiHeroBg">
+    <div class="container hero-grid">
+      <div>
+        <div class="release-pill"><span class="pulse-dot"></span><span id="uiHeroPill">v1.0.3 for Windows — Now Available</span></div>
+        <h1 class="hero-title"><span id="uiHeroTitle1">Downloads, made</span><br /><span class="highlight" id="uiHeroTitle2">faster and simpler.</span></h1>
+        <p class="hero-desc" id="uiHeroDesc">A lightweight, ad-free download manager built for everyday speed and reliability.</p>
+        <div class="hero-actions">
+          <a href="https://github.com/jhsoftwareltd/jh-download-manager-releases/releases/download/1.0.3/JH.Download.Manager.Setup.exe" class="btn-primary" id="uiHeroDownloadBtn" onclick="showToast('Downloading JH Download Manager for Windows...')">
+            Download for Windows
+          </a>
+          <a href="#downloads" class="btn-secondary">All Platforms</a>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="orbit"></div>
+        <div class="product-card">
+          <div class="app-icon-wrap" id="uiAppIconWrap">
+            <svg width="92" height="92" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="arrowBodyGrad" x1="60" y1="20" x2="60" y2="90" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#d9f99d"/><stop offset="22%" stop-color="#84cc16"/><stop offset="72%" stop-color="#22c55e"/><stop offset="100%" stop-color="#15803d"/></linearGradient>
+                <linearGradient id="trayGrad" x1="60" y1="74" x2="60" y2="108" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#a3e635"/><stop offset="45%" stop-color="#22c55e"/><stop offset="100%" stop-color="#166534"/></linearGradient>
+                <linearGradient id="swooshGrad" x1="8" y1="88" x2="115" y2="36" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#65a30d"/><stop offset="45%" stop-color="#15803d"/><stop offset="100%" stop-color="#4ade80"/></linearGradient>
+              </defs>
+              <path d="M40 44C17 50 6 63 10 77C13 87 25 91 36 90L36 82C26 83 18 79 16 72C14 63 23 53 40 46Z" fill="url(#swooshGrad)"/>
+              <rect x="92" y="15" width="11" height="11" rx="2.5" fill="url(#arrowBodyGrad)"/><rect x="81" y="24" width="8" height="8" rx="2" fill="url(#arrowBodyGrad)"/><rect x="99" y="28" width="9" height="9" rx="2" fill="url(#arrowBodyGrad)"/><rect x="88" y="34" width="10" height="10" rx="2.2" fill="url(#arrowBodyGrad)"/>
+              <path d="M27 75C27 71.5 29.8 69 33 69C36.2 69 39 71.5 39 75V92H81V75C81 71.5 83.8 69 87 69C90.2 69 93 71.5 93 75V95C93 100.5 88.5 105 83 105H37C31.5 105 27 100.5 27 95V75Z" fill="url(#trayGrad)"/>
+              <path d="M45 25C45 21.7 47.7 19 51 19H69C72.3 19 75 21.7 75 25V53H86C90.5 53 92.8 58.3 89.6 61.5L64.2 87.2C61.9 89.5 58.1 89.5 55.8 87.2L30.4 61.5C27.2 58.3 29.5 53 34 53H45V25Z" fill="url(#arrowBodyGrad)"/>
+              <path d="M51 89C82 81 112 63 111 46C110 38 97 34 78 39L79 44C95 40 105 43 105 49C106 62 79 79 51 89Z" fill="url(#swooshGrad)"/>
+              <path d="M53.5 42.5C53.5 40.8 55.4 39.8 56.8 40.7L70.5 49.2C71.8 50 71.8 52 70.5 52.8L56.8 61.3C55.4 62.2 53.5 61.2 53.5 59.5V42.5Z" fill="#ffffff"/>
+            </svg>
+          </div>
+          <h3 id="uiProductName">JH Download Manager</h3>
+          <span id="uiCardVer">v1.0.3</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOWNLOAD HUB -->
+  <section class="section" id="downloads">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title" id="uiDownloadHeading">Get JH Download Manager</h2>
+          <p class="section-sub" id="uiDownloadSub">Choose your platform.</p>
+        </div>
+        <div class="release-badge">Latest Release: <strong id="uiShelfVer">v1.0.3</strong></div>
+      </div>
+
+      <div class="platform-grid">
+        <div class="platform-card available" id="card-windows">
+          <div>
+            <div class="card-top-bar">
+              <span class="ver-tag ver-live" id="ver-windows">v1.0.3</span>
+              <span class="status-tag status-live" id="status-windows">Available</span>
+            </div>
+            <div class="os-row">
+              <div class="os-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="#0078D4"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/></svg></div>
+              <h3>Windows</h3>
+            </div>
+            <p class="os-meta" id="meta-windows">Windows 10 &amp; 11 (64-bit) &bull; Setup (.exe)</p>
+          </div>
+          <div id="action-windows">
+            <a href="https://github.com/jhsoftwareltd/jh-download-manager-releases/releases/download/1.0.3/JH.Download.Manager.Setup.exe" class="btn-dl btn-dl-live" onclick="showToast('Downloading JH Download Manager v1.0.3...')">Download v1.0.3</a>
+          </div>
+        </div>
+
+        <div class="platform-card" id="card-android">
+          <div>
+            <div class="card-top-bar">
+              <span class="ver-tag ver-soon" id="ver-android">Target v1.0.3</span>
+              <span class="status-tag status-soon" id="status-android">Coming Soon</span>
+            </div>
+            <div class="os-row">
+              <div class="os-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="#3DDC84"><path d="M17.523 15.3414C17.523 15.9666 17.0161 16.4735 16.3909 16.4735C15.7657 16.4735 15.2588 15.9666 15.2588 15.3414C15.2588 14.7162 15.7657 14.2093 16.3909 14.2093C17.0161 14.2093 17.523 14.7162 17.523 15.3414ZM8.74124 15.3414C8.74124 15.9666 8.23435 16.4735 7.60916 16.4735C6.98397 16.4735 6.47708 15.9666 6.47708 15.3414C6.47708 14.7162 6.98397 14.2093 7.60916 14.2093C8.23435 14.2093 8.74124 14.7162 8.74124 15.3414ZM17.9082 10.158L19.8655 6.76818C19.9977 6.53906 19.9192 6.24599 19.6901 6.1137C19.461 5.98142 19.1679 6.05992 19.0356 6.28904L17.0539 9.72172C15.5364 9.02945 13.8165 8.64014 12 8.64014C10.1835 8.64014 8.46364 9.02945 6.94613 9.72172L4.96437 6.28904C4.83208 6.05992 4.53901 5.98142 4.30989 6.1137C4.08077 6.24599 4.00227 6.53906 4.13455 6.76818L6.09182 10.158C3.03578 11.8165 1.00018 14.8891 1 18.4235H23C22.9998 14.8891 20.9642 11.8165 17.9082 10.158Z"/></svg></div>
+              <h3>Android</h3>
+            </div>
+            <p class="os-meta" id="meta-android">Android 9.0+ &bull; Mobile App</p>
+          </div>
+          <div id="action-android">
+            <button class="btn-dl btn-dl-soon" disabled>Coming Soon</button>
+          </div>
+        </div>
+
+        <div class="platform-card" id="card-macos">
+          <div>
+            <div class="card-top-bar">
+              <span class="ver-tag ver-soon" id="ver-macos">Target v1.0.3</span>
+              <span class="status-tag status-soon" id="status-macos">Coming Soon</span>
+            </div>
+            <div class="os-row">
+              <div class="os-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="#1D1D1F"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.96 6.32c.68-.82 1.14-1.97 1.01-3.12-.98.04-2.17.65-2.87 1.48-.63.73-1.18 1.9-1.03 3.02 1.1.08 2.21-.56 2.89-1.38"/></svg></div>
+              <h3>macOS</h3>
+            </div>
+            <p class="os-meta" id="meta-macos">Apple Silicon &amp; Intel &bull; .dmg</p>
+          </div>
+          <div id="action-macos">
+            <button class="btn-dl btn-dl-soon" disabled>Coming Soon</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="promo-banner-wrap" id="uiPromoBannerWrap">
+        <img id="uiPromoBannerImg" src="" alt="Product Preview" />
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="section" id="features">
+    <div class="container">
+      <h2 class="section-title" id="uiFeaturesTitle">Built for everyday speed.</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon" id="feat-icon-0">&#9889;</div>
+          <h3 id="feat-title-0">Faster Downloads</h3>
+          <p id="feat-desc-0">Multi-stream technology utilizes your full internet speed.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" id="feat-icon-1">&#9208;</div>
+          <h3 id="feat-title-1">Pause &amp; Resume</h3>
+          <p id="feat-desc-1">Resume interrupted downloads anytime without losing progress.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" id="feat-icon-2">&#128737;</div>
+          <h3 id="feat-title-2">Clean &amp; Lightweight</h3>
+          <p id="feat-desc-2">Zero ads, zero trackers, and minimal system resource usage.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SUPPORT / FAQ -->
+  <section class="section" id="support">
+    <div class="container">
+      <div style="text-align:center;"><h2 class="section-title">Support &amp; FAQ</h2></div>
+      <div class="faq-list">
+        <div class="faq-item active">
+          <button class="faq-btn"><span id="faq-q-0">Is JH Download Manager free?</span> <span>+</span></button>
+          <div class="faq-answer" id="faq-a-0">Yes, it is completely free to download and use with no hidden ads.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-btn"><span id="faq-q-1">Which Windows versions are supported?</span> <span>+</span></button>
+          <div class="faq-answer" id="faq-a-1">It runs smoothly on both Windows 10 and Windows 11 (64-bit).</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-btn"><span id="faq-q-2">How can I get support?</span> <span>+</span></button>
+          <div class="faq-answer" id="faq-a-2">Email our team anytime at support@jhsoftwarelimited.com.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <h4 style="font-size:15px;" id="uiFooterName">JH Software Limited</h4>
+          <p id="uiFooterTagline">Innovative software. Simpler digital experiences.</p>
+        </div>
+        <div class="footer-cols">
+          <div>
+            <h4>Product</h4>
+            <ul><li><a href="#downloads">Download</a></li><li><a href="#features">Features</a></li></ul>
+          </div>
+          <div>
+            <h4>Support</h4>
+            <ul><li><a href="#support">FAQ</a></li><li><a id="uiSupportEmailLink" href="mailto:support@jhsoftwarelimited.com">support@jhsoftwarelimited.com</a></li></ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span id="uiFooterCopyright">&copy; <span id="year"></span> JH Software Limited. All rights reserved.</span>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script>
+    const FIREBASE_CONFIG = {
+      apiKey: "AIzaSyAJulbUYggcvMFIsEJpEGs7Ygjqq33pw1w",
+      authDomain: "jh-software.firebaseapp.com",
+      projectId: "jh-software",
+      storageBucket: "jh-software.firebasestorage.app",
+      messagingSenderId: "938682382770",
+      appId: "1:938682382770:web:3cecc2e4d73a68a3e74cab"
+    };
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+    document.getElementById("mobileToggle").addEventListener("click", () => document.getElementById("navLinks").classList.toggle("open"));
+    document.querySelectorAll(".faq-btn").forEach(btn => btn.addEventListener("click", () => btn.parentElement.classList.toggle("active")));
+
+    const toastEl = document.getElementById("toast");
+    let toastTimer;
+    function showToast(msg) {
+      toastEl.textContent = msg;
+      toastEl.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toastEl.classList.remove("show"), 3200);
+    }
+
+    function applySiteData(d) {
+      if (!d) return;
+      if (d.accentColor) document.documentElement.style.setProperty("--accent-blue", d.accentColor);
+      if (d.primaryBtnColor) document.documentElement.style.setProperty("--accent-blue-strong", d.primaryBtnColor);
+
+      if (d.companyName) {
+        document.getElementById("uiCompanyName").textContent = d.companyName;
+        document.getElementById("uiFooterName").textContent = d.companyName + (d.companySub ? " " + d.companySub : "");
+      }
+      if (d.companySub !== undefined) document.getElementById("uiCompanySub").textContent = d.companySub;
+      if (d.productName) document.getElementById("uiProductName").textContent = d.productName;
+      if (d.heroPill) document.getElementById("uiHeroPill").textContent = d.heroPill;
+      if (d.heroTitle1) document.getElementById("uiHeroTitle1").textContent = d.heroTitle1;
+      if (d.heroTitle2) document.getElementById("uiHeroTitle2").textContent = d.heroTitle2;
+      if (d.heroDesc) document.getElementById("uiHeroDesc").textContent = d.heroDesc;
+      if (d.heroBtnText) document.getElementById("uiHeroDownloadBtn").textContent = d.heroBtnText;
+      if (d.featuresTitle) document.getElementById("uiFeaturesTitle").textContent = d.featuresTitle;
+      if (d.footerTagline) document.getElementById("uiFooterTagline").textContent = d.footerTagline;
+      if (d.footerCopyright) document.getElementById("uiFooterCopyright").textContent = d.footerCopyright;
+
+      if (d.latestVersion) {
+        document.getElementById("uiNavCta").textContent = `Download ${d.latestVersion}`;
+        document.getElementById("uiCardVer").textContent = d.latestVersion;
+        document.getElementById("uiShelfVer").textContent = d.latestVersion;
+      }
+      if (d.supportEmail) {
+        const mail = document.getElementById("uiSupportEmailLink");
+        mail.textContent = d.supportEmail;
+        mail.href = "mailto:" + d.supportEmail;
+      }
+      if (d.companyLogoUrl) {
+        document.getElementById("uiNavbarLogoWrap").innerHTML = `<img class="custom-logo" src="${d.companyLogoUrl}" alt="Logo" />`;
+      }
+      if (d.appIconUrl) {
+        document.getElementById("uiAppIconWrap").innerHTML = `<img src="${d.appIconUrl}" alt="App Icon" />`;
+      }
+      if (d.promoBannerUrl) {
+        document.getElementById("uiPromoBannerImg").src = d.promoBannerUrl;
+        document.getElementById("uiPromoBannerWrap").style.display = "block";
+      } else {
+        document.getElementById("uiPromoBannerWrap").style.display = "none";
+      }
+
+      if (Array.isArray(d.features)) {
+        d.features.forEach((f, i) => {
+          if (f.icon) document.getElementById(`feat-icon-${i}`).textContent = f.icon;
+          if (f.title) document.getElementById(`feat-title-${i}`).textContent = f.title;
+          if (f.desc) document.getElementById(`feat-desc-${i}`).textContent = f.desc;
+        });
+      }
+
+      if (Array.isArray(d.faqs)) {
+        d.faqs.forEach((item, i) => {
+          if (item.q) document.getElementById(`faq-q-${i}`).textContent = item.q;
+          if (item.a) document.getElementById(`faq-a-${i}`).textContent = item.a;
+        });
+      }
+
+      if (d.platforms) {
+        if (d.platforms.windows?.url) document.getElementById("uiHeroDownloadBtn").href = d.platforms.windows.url;
+        ["windows", "android", "macos"].forEach(os => {
+          const p = d.platforms[os];
+          if (!p) return;
+          const isLive = p.status === "available";
+          const verEl = document.getElementById(`ver-${os}`);
+          const statusEl = document.getElementById(`status-${os}`);
+          const cardEl = document.getElementById(`card-${os}`);
+          const actionEl = document.getElementById(`action-${os}`);
+
+          verEl.textContent = isLive ? p.version : `Target ${p.version}`;
+          verEl.className = `ver-tag ${isLive ? "ver-live" : "ver-soon"}`;
+          statusEl.textContent = isLive ? "Available" : "Coming Soon";
+          statusEl.className = `status-tag ${isLive ? "status-live" : "status-soon"}`;
+          cardEl.classList.toggle("available", isLive);
+          if (p.meta) document.getElementById(`meta-${os}`).textContent = p.meta;
+
+          actionEl.innerHTML = (isLive && p.url)
+            ? `<a href="${p.url}" class="btn-dl btn-dl-live" onclick="showToast('Downloading ${p.version}...')">Download ${p.version}</a>`
+            : `<button class="btn-dl btn-dl-soon" disabled>Coming Soon</button>`;
+        });
+      }
+    }
+
+    firebase.initializeApp(FIREBASE_CONFIG);
+    firebase.firestore().collection("siteConfig").doc("main").onSnapshot(doc => {
+      if (doc.exists) applySiteData(doc.data());
+    });
+  </script>
+</body>
+</html>
